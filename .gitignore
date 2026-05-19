@@ -131,6 +131,12 @@ __pypackages__/
 node_modules/
 **/node_modules/
 
+venv/
+.venv/
+
+backend/data/uploads/
+backend/data/chroma/
+
 # Celery stuff
 celerybeat-schedule
 celerybeat.pid
