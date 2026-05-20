@@ -87,12 +87,29 @@ class EmbeddingService:
         even if the description doesn't say "beach" explicitly.
         """
         self._load()
-
         image = Image.open(image_path).convert("RGB")
 
+        # Qwen3-VL requires messages format with vision tokens via chat template
+        messages = [
+            {
+                "role": "user",
+                "content": [
+                    {"type": "image", "image": image},
+                    {"type": "text", "text": text},
+                ],
+            }
+        ]
+
+        # Apply the chat template to get properly formatted text with vision tokens
+        prompt = self.processor.apply_chat_template(
+            messages,
+            tokenize=False,
+            add_generation_prompt=False,
+        )
+
         inputs = self.processor(
-            text=text,
-            images=image,
+            text=prompt,
+            images=[image],
             return_tensors="pt",
             padding=True,
             truncation=True,
@@ -103,8 +120,8 @@ class EmbeddingService:
 
         embedding = outputs.last_hidden_state.mean(dim=1).squeeze()
         embedding = embedding / embedding.norm()
-
         return embedding.cpu().tolist()
+        
 
     def embed_entry(self, text: str, image_path: str | None = None) -> list[float]:
         """

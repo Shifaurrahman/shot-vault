@@ -29,10 +29,23 @@ class Settings(BaseSettings):
     aws_bucket_name: str = ""
     aws_region: str = "ap-southeast-1"
 
-    # LLM — Claude (answer generation)
+    # ── LLM Provider (change this to switch) ──────────────
+    llm_provider: Literal["anthropic", "openai", "local"] = "anthropic"
+
+    # ── Anthropic ─────────────────────────────────────────
     anthropic_api_key: str = ""
     anthropic_model: str = "claude-3-5-haiku-20241022"
     anthropic_max_tokens: int = 512
+
+    # ── OpenAI ────────────────────────────────────────────
+    openai_api_key: str = ""
+    openai_model: str = "gpt-4o-mini"
+    openai_base_url: str = "https://api.openai.com/v1"
+
+    # ── Local LLM (LM Studio / Ollama) ────────────────────
+    local_base_url: str = "http://localhost:1234/v1"   # LM Studio default
+    local_model: str = "llama-3.2-3b-instruct"         # must match model in LM Studio
+    local_api_key: str = "lm-studio"                   # any string works
 
     # Server
     host: str = "0.0.0.0"
